@@ -80,7 +80,7 @@ class BarPainter extends CustomPainter {
       final maxTextPainter = TextPainter(text: maxTextSpan, textDirection: TextDirection.ltr);
       maxTextPainter.layout();
       final maxTextOffset = Offset(currentPosition + sectionWidth - maxTextPainter.width,
-          i % 2 == 0 ? size.height - 32 : size.height + 15);
+          i % 2 == 0 ? size.height - 32 : size.height + 8);
       maxTextPainter.paint(canvas, maxTextOffset);
 
       currentPosition += sectionWidth;

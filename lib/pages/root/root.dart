@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neodocs/components/range_bar.dart';
+import 'package:neodocs/components/snackbar.dart';
 
 class Root extends StatefulWidget {
   const Root({super.key});
@@ -9,6 +10,7 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
+
   final TextEditingController _controller = TextEditingController();
   final ValueNotifier<double> userValue = ValueNotifier<double>(0.0);
 
@@ -18,21 +20,28 @@ class _RootState extends State<Root> {
     RangeSection(min: 40, max: 60, color: Colors.green, label: 'Ideal'),
     RangeSection(min: 60, max: 70, color: Colors.orange, label: 'Moderate'),
     RangeSection(min: 70, max: 120, color: Colors.red, label: 'Dangerous'),
-
   ];
 
 
   void onSubmitted(String value) {
+
     final double inputValue = double.tryParse(value) ?? 0.0;
     final isValid = sections.any((section) => inputValue >= section.min && inputValue <= section.max);
+    final selectedSection = sections.firstWhere((section) => inputValue >= section.min && inputValue <= section.max, orElse: () => sections.first);
+
+
     if (isValid) {
       userValue.value = inputValue;
+      GlobalSnackBar.show(
+        context: context,
+        message: 'Range is ${selectedSection.label}',
+        backgroundColor: selectedSection.color,
+      );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Invalid input. Please enter a value within the range.'),
-        ),
+      GlobalSnackBar.show(
+        context: context,
+        message: 'Invalid input. Please enter a value within the range.',
+        backgroundColor: Colors.red,
       );
     }
   }
@@ -62,7 +71,6 @@ class _RootState extends State<Root> {
               ),
             ),
           ),
-
           const SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.all(24.0),
