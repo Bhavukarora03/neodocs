@@ -27,15 +27,16 @@ class BarPainter extends CustomPainter {
       }
     }
 
-    final double sectionWidth = totalWidth / (sections.length + numberOfGaps);
+
 
     for (var i = 0; i < sections.length; i++) {
       var section = sections[i];
       final paint = Paint()..color = section.color;
+      double sectionWidth = (section.range / totalRange) * totalWidth;
 
       // Draw gap between sections if necessary
       if (previousMax != null && section.min > previousMax) {
-        final gapWidth = sectionWidth;
+        final gapWidth = sectionWidth * numberOfGaps / sections.length;
         final gapPaint = Paint()..color = Colors.grey;
         final gapRect = RRect.fromRectAndRadius(
           Rect.fromLTWH(currentPosition, 0.0, gapWidth, size.height),
@@ -91,13 +92,16 @@ class BarPainter extends CustomPainter {
     final arrowPaint = Paint()
       ..color = Colors.black
       ..strokeWidth = 2.0;
+    // Calculate the arrow's position
+    double arrowPosition = (userValue / totalRange) * totalWidth;
+
     final arrowPath = Path();
-    final arrowPosition = (userValue / totalRange) * totalWidth;
     arrowPath.moveTo(arrowPosition, size.height);
     arrowPath.lineTo(arrowPosition - 10, size.height + 20);
     arrowPath.lineTo(arrowPosition + 10, size.height + 20);
     arrowPath.close();
     canvas.drawPath(arrowPath, arrowPaint);
+
 
     // Draw user value text
     final textSpan = TextSpan(
